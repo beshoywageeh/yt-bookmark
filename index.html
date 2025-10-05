@@ -1,90 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Bookmark Manager</title>
+    <title>مدير الإشارات المرجعية ليوتيوب</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
+        :root {
+            --primary-color: #ff0000;
+            --primary-hover-color: #cc0000;
+            --light-gray-color: #f5f5f5;
+            --medium-gray-color: #e0e0e0;
+            --dark-gray-color: #666;
+            --font-family: 'Arial', sans-serif;
         }
 
-        .input-container {
-            display: flex;
-            gap: 10px;
+        body {
+            font-family: var(--font-family);
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #fafafa;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
             margin-bottom: 20px;
         }
 
-        input {
-            flex: 1;
-            padding: 8px;
+        @media (min-width: 600px) {
+            .form-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-container .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        input[type="url"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
             font-size: 16px;
+            border: 1px solid var(--medium-gray-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            grid-column: 1 / -1;
         }
 
         button {
-            padding: 8px 16px;
-            background-color: #ff0000;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #cc0000;
+            background-color: var(--primary-hover-color);
+        }
+
+        .search-filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-filter-container input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        #tagFilters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag-filter {
+            padding: 5px 10px;
+            background-color: var(--medium-gray-color);
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        
+        .tag-filter.active {
+            background-color: var(--primary-color);
+            color: white;
         }
 
         .bookmark-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .bookmark-item {
+            background-color: var(--light-gray-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bookmark-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .bookmark-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bookmark-title {
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 10px;
+            flex-grow: 1;
+        }
+        
+        .bookmark-title:hover {
+            color: var(--primary-color);
+        }
+
+        .bookmark-tags {
+            margin-bottom: 10px;
+        }
+
+        .bookmark-tags .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: var(--medium-gray-color);
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .bookmark-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-radius: 4px;
-        }
-
-        .bookmark-item a {
-            color: #000;
-            text-decoration: none;
-            flex: 1;
-            margin-right: 10px;
-        }
-
-        .bookmark-item a:hover {
-            text-decoration: underline;
         }
 
         .delete-btn {
-            background-color: #666;
-            padding: 4px 8px;
-            font-size: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            color: var(--dark-gray-color);
+        }
+        
+        .delete-btn:hover {
+            color: var(--primary-color);
         }
 
         .error {
             color: red;
             margin-top: 10px;
+            text-align: center;
         }
+
+        .io-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .io-buttons button {
+            background-color: var(--dark-gray-color);
+        }
+        
+        .io-buttons button:hover {
+            background-color: #555;
+        }
+
+        #importFile {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
-    <h1>YouTube Bookmark Manager</h1>
+    <h1>مدير الإشارات المرجعية ليوتيوب</h1>
     
-    <div class="input-container">
-        <input type="url" id="videoUrl" placeholder="Paste YouTube video URL here" />
-        <button onclick="addBookmark()">Add Bookmark</button>
-    </div>
+    <div class="container">
+        <div class="form-container">
+            <input type="url" id="videoUrl" placeholder="لصق رابط فيديو يوتيوب هنا" class="full-width">
+            <input type="text" id="timestamp" placeholder="الوقت (مثل: 3m25s)">
+            <input type="text" id="tags" placeholder="التصنيفات (مفصولة بفاصلة)">
+            <div class="form-actions full-width">
+                <button onclick="addBookmark()">إضافة إشارة مرجعية</button>
+            </div>
+        </div>
 
-    <div id="error" class="error"></div>
-    <div id="bookmarkList" class="bookmark-list"></div>
+        <div id="error" class="error"></div>
+
+        <div class="search-filter-container">
+            <input type="text" id="searchBar" placeholder="بحث في العناوين والتصنيفات...">
+            <div id="tagFilters"></div>
+        </div>
+
+        <div id="bookmarkList" class="bookmark-list"></div>
+
+        <div class="io-buttons">
+            <button onclick="exportData()">تصدير البيانات</button>
+            <button onclick="document.getElementById('importFile').click()">استيراد البيانات</button>
+            <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>
